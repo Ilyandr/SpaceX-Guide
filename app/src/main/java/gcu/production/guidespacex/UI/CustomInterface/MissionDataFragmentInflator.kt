@@ -4,7 +4,6 @@ package gcu.production.guidespacex.UI.CustomInterface
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.SpannableStringBuilder
-import android.text.method.ScrollingMovementMethod
 import androidx.core.content.ContextCompat
 import androidx.core.text.color
 import coil.load
@@ -17,7 +16,8 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 internal abstract class MissionDataFragmentInflator(
     private val context: Context
@@ -71,9 +71,6 @@ internal abstract class MissionDataFragmentInflator(
                         .color(descriptionColor) { append("Details: ") }
                         .append(currentEntity.details)
 
-                viewParentBinding.missionDetails.movementMethod =
-                    ScrollingMovementMethod()
-
                 viewParentBinding.crewData.text = ""
 
                 if (observableList.isNotEmpty())
@@ -82,6 +79,14 @@ internal abstract class MissionDataFragmentInflator(
                             "${viewParentBinding.crewData.text}" +
                                     "\n${it.fullName} - ${it.agency} - ${it.status}"
                     }
+
+                Executors
+                    .newSingleThreadScheduledExecutor()
+                    .schedule(
+                        { observableList.clear()}
+                        , 500
+                        , TimeUnit.MILLISECONDS
+                    )
 
                 viewParentBinding.crewData.text =
                     SpannableStringBuilder()

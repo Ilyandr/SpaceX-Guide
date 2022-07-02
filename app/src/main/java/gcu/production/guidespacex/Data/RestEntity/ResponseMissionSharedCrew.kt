@@ -8,7 +8,7 @@ internal data class ResponseMissionSharedCrew(
      val largeIcon: String? = null
     , val details: String?  = null
     , val crew: List<String>? = null
-): Parcelable
+): Parcelable // Сериализация - это хорошо, но мы, как джентельмены, отдаём прдпочтение производительности.
 {
     constructor(parcel: Parcel) : this(
         parcel.readString(),

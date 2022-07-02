@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import gcu.production.guidespacex.Adapters.CustomAdapter
 import gcu.production.guidespacex.App
-import gcu.production.guidespacex.Data.LoadingState
 import gcu.production.guidespacex.Data.ObservableList
 import gcu.production.guidespacex.GeneralImpl.GeneralUIImpl
 import gcu.production.guidespacex.R
@@ -88,8 +87,6 @@ internal class MissionListActivity : AppCompatActivity(), GeneralUIImpl
             this.missionListViewModel.launchWithCheckNetworkConnection()
 
         this.recyclerAdapter.setActionClick {
-            if (this.missionListViewModel.state.value
-                        is LoadingState.LoadingSuccessLoadingState)
                 this.missionListViewModel
                     .navigationApp
                     .navigate(NAVIGATE_KEY to it)

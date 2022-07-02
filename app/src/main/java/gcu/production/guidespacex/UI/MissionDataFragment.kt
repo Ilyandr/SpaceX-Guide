@@ -38,8 +38,7 @@ internal class MissionDataFragment : Fragment(), GeneralUIImpl
             )
     }
 
-    override fun launchBasicLogic()
-    {
-        viewModel.launchWithCheckNetworkConnection()
+    override fun launchBasicLogic() {
+        this.viewModel.launchWithCheckNetworkConnection()
     }
 }

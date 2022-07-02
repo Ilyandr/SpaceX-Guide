@@ -54,6 +54,7 @@ internal class MissionDataViewModel(
 
     private fun loadDataForList()
     {
+        this.observableList.wrapped.clear()
         this.state.set(LoadingState.LoadingProcessState)
 
         this.observableList.setActionChange {
@@ -61,21 +62,12 @@ internal class MissionDataViewModel(
             this.state.set(LoadingState.LoadingSuccessLoadingState)
         }
 
-        if (!this.singleMissionListEntity
-                .responseMissionSharedCrew
-                ?.crew.isNullOrEmpty())
-            singleMissionListEntity
-                .responseMissionSharedCrew
-                ?.crew
-                ?.forEach {
-                    this.restRepositoryImpl.launchGetDetailsInfo(it)
-                }
-        else
-        {
-            this.state.set(LoadingState.LoadingSuccessLoadingState)
-            this inflateView observableList
-            observableList.wrapped.clear()
-        }
+        singleMissionListEntity
+            .responseMissionSharedCrew
+            ?.crew
+            ?.forEach {
+                this.restRepositoryImpl.launchGetDetailsInfo(it)
+            }
     }
 
     override fun networkFaultConnection()
@@ -91,14 +83,25 @@ internal class MissionDataViewModel(
         (state.value as LoadingState.LoadingErrorLoadingState).showMessageError()
     }
 
-    override fun launchWithCheckNetworkConnection() =
-        NetworkConnection
-            .checkingAccessWithActions(
-                actionSuccess = ::loadDataForList
-                , actionFault = ::networkFaultConnection
-                , actionsLoadingAfterAndBefore = Pair(
-                    Runnable { this.customLoadingDialog.startLoadingDialog() }
-                    , Runnable { this.customLoadingDialog.stopLoadingDialog() })
-                ,  listenerForFailConnection = this
-            )
+    override fun launchWithCheckNetworkConnection()
+    {
+        if (this.singleMissionListEntity
+                .responseMissionSharedCrew!!
+                .crew!!
+                .isNotEmpty())
+            NetworkConnection
+                .checkingAccessWithActions(
+                    actionSuccess = ::loadDataForList,
+                    actionFault = ::networkFaultConnection,
+                    actionsLoadingAfterAndBefore = Pair(
+                        Runnable { this.customLoadingDialog.startLoadingDialog() },
+                        Runnable { this.customLoadingDialog.stopLoadingDialog() }),
+                    listenerForFailConnection = this
+                )
+        else
+        {
+            this.state.set(LoadingState.LoadingSuccessLoadingState)
+            this inflateView observableList
+        }
+    }
 }

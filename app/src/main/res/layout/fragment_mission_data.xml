@@ -1,95 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@color/themeApp"
+    android:scrollbars="vertical"
     android:layout_height="match_parent"
     tools:context=".UI.MissionDataFragment">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/largeMissionIcon"
-        android:layout_width="244dp"
-        android:layout_height="244dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/missionName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:fontFamily="@font/bandera_small_font"
-        android:textColor="@color/textAdditional"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/largeMissionIcon" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/largeMissionIcon"
+            android:layout_width="244dp"
+            android:layout_height="244dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/firstCount"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/bandera_middle_font"
-        android:textColor="@color/textAdditional"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/missionName"
-        app:layout_constraintStart_toStartOf="@+id/missionName"
-        app:layout_constraintTop_toBottomOf="@+id/missionName" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/missionName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/bandera_small_font"
+            android:textColor="@color/textAdditional"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/largeMissionIcon" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/missionStatus"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/bandera_middle_font"
-        android:textColor="@color/textAdditional"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/firstCount"
-        app:layout_constraintStart_toStartOf="@+id/firstCount"
-        app:layout_constraintTop_toBottomOf="@+id/firstCount" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/firstCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/bandera_middle_font"
+            android:textColor="@color/textAdditional"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/missionName"
+            app:layout_constraintStart_toStartOf="@+id/missionName"
+            app:layout_constraintTop_toBottomOf="@+id/missionName" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/missionDetails"
-        android:layout_width="0dp"
-        android:layout_height="86sp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/bandera_middle_font"
-        android:scrollbars="vertical"
-        android:textColor="@color/textAdditional"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/missionStatus"
-        app:layout_constraintStart_toStartOf="@+id/missionStatus"
-        app:layout_constraintTop_toBottomOf="@+id/missionStatus" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/missionStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/bandera_middle_font"
+            android:textColor="@color/textAdditional"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/firstCount"
+            app:layout_constraintStart_toStartOf="@+id/firstCount"
+            app:layout_constraintTop_toBottomOf="@+id/firstCount" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/missionDate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/bandera_middle_font"
-        android:textColor="@color/textAdditional"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/missionDetails"
-        app:layout_constraintStart_toStartOf="@+id/missionDetails"
-        app:layout_constraintTop_toBottomOf="@+id/missionDetails" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/missionDetails"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/bandera_middle_font"
+            android:textColor="@color/textAdditional"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/missionStatus"
+            app:layout_constraintStart_toStartOf="@+id/missionStatus"
+            app:layout_constraintTop_toBottomOf="@+id/missionStatus" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/crewData"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/bandera_middle_font"
-        android:textColor="@color/textAdditional"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/missionDate"
-        app:layout_constraintStart_toStartOf="@+id/missionDate"
-        app:layout_constraintTop_toBottomOf="@+id/missionDate" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/missionDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/bandera_middle_font"
+            android:textColor="@color/textAdditional"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/missionDetails"
+            app:layout_constraintStart_toStartOf="@+id/missionDetails"
+            app:layout_constraintTop_toBottomOf="@+id/missionDetails" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/crewData"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/bandera_middle_font"
+            android:textColor="@color/textAdditional"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/missionDate"
+            app:layout_constraintStart_toStartOf="@+id/missionDate"
+            app:layout_constraintTop_toBottomOf="@+id/missionDate" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
