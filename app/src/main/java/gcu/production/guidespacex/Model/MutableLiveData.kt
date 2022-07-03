@@ -1,5 +1,5 @@
 @file:Suppress("PackageName")
-package gcu.production.guidespacex.Data
+package gcu.production.guidespacex.Model
 
 import androidx.lifecycle.MutableLiveData
 

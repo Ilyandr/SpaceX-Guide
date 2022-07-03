@@ -4,7 +4,7 @@ package gcu.production.guidespacex.DI.Component
 import dagger.Component
 import gcu.production.guidespacex.Adapters.CustomAdapter
 import gcu.production.guidespacex.DI.Module.DataMissionsModule
-import gcu.production.guidespacex.UI.MissionListActivity
+import gcu.production.guidespacex.View.MissionListActivity
 import gcu.production.guidespacex.ViewModels.MissionListViewModel
 import javax.inject.Singleton
 

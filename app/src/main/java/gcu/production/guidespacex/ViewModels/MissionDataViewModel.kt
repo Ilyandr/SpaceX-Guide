@@ -3,32 +3,28 @@ package gcu.production.guidespacex.ViewModels
 
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import gcu.production.guidespacex.App
-import gcu.production.guidespacex.Data.LoadingState
 import gcu.production.guidespacex.Data.ObservableList
-import gcu.production.guidespacex.Data.default
-import gcu.production.guidespacex.Data.set
-import gcu.production.guidespacex.GeneralImpl.NetworkActions
-import gcu.production.guidespacex.R
 import gcu.production.guidespacex.Service.NetworkConnection
 import gcu.production.guidespacex.Data.RestEntity.PeopleData
 import gcu.production.guidespacex.Data.RestEntity.SingleMissionListEntity
 import gcu.production.guidespacex.Service.Rest.RestRepositoryImpl
-import gcu.production.guidespacex.UI.CustomInterface.CustomLoadingDialog
-import gcu.production.guidespacex.UI.CustomInterface.MissionDataFragmentInflator
-import gcu.production.guidespacex.databinding.FragmentMissionDataBinding
+import gcu.production.guidespacex.CustomInterface.CustomLoadingDialog
+import gcu.production.guidespacex.CustomInterface.ViewInflator
+import gcu.production.guidespacex.GeneralImpl.ViewModelImpl
+import gcu.production.guidespacex.Model.LoadingStateModule
+import gcu.production.guidespacex.Model.default
+import gcu.production.guidespacex.Model.set
+import gcu.production.guidespacex.R
 import javax.inject.Inject
 
 internal class MissionDataViewModel(
     private val singleMissionListEntity: SingleMissionListEntity
     , contextCall: FragmentActivity
-    , viewParentBinding: FragmentMissionDataBinding
-): MissionDataFragmentInflator(
-    contextCall
-    , singleMissionListEntity
-    , viewParentBinding
-), NetworkActions
+): ViewModel(), ViewModelImpl
 {
     @Inject
     lateinit var restRepositoryImpl: RestRepositoryImpl
@@ -36,14 +32,16 @@ internal class MissionDataViewModel(
     @Inject
     lateinit var observableList: ObservableList<PeopleData>
 
-    private val customLoadingDialog: CustomLoadingDialog
-            by lazy { CustomLoadingDialog(contextCall) }
+    private val customLoadingDialog: CustomLoadingDialog by lazy {
+        CustomLoadingDialog(contextCall)
+    }
 
-    private val state =
-        MutableLiveData<LoadingState>()
-            .default(
-                initialState = LoadingState.DefaultLoadingState
-            )
+    private val loadingStateMutableModule =
+        MutableLiveData<LoadingStateModule>()
+           .default(LoadingStateModule.DefaultLoadingStateModule)
+
+     val loadingStateModule: LiveData<LoadingStateModule> =
+         this.loadingStateMutableModule
 
     init
     {
@@ -52,56 +50,67 @@ internal class MissionDataViewModel(
             .inject(this)
     }
 
-    private fun loadDataForList()
+    override fun actionStateFaultLoading()
     {
-        this.observableList.wrapped.clear()
-        this.state.set(LoadingState.LoadingProcessState)
+        Toast.makeText(
+            this.customLoadingDialog.context
+            , R.string.toastNetworkError
+            , Toast.LENGTH_SHORT
+        ).show()
 
-        this.observableList.setActionChange {
-            this inflateView observableList
-            this.state.set(LoadingState.LoadingSuccessLoadingState)
-        }
-
-        singleMissionListEntity
-            .responseMissionSharedCrew
-            ?.crew
-            ?.forEach {
-                this.restRepositoryImpl.launchGetDetailsInfo(it)
-            }
-    }
-
-    override fun networkFaultConnection()
-    {
-        state.set(
-            LoadingState.LoadingErrorLoadingState(
-                messageError = Toast.makeText(
-                    this.customLoadingDialog.context
-                    , R.string.toastNetworkError
-                    , Toast.LENGTH_SHORT)
-            )
+        this.loadingStateMutableModule.set(
+            LoadingStateModule.DefaultLoadingStateModule
         )
-        (state.value as LoadingState.LoadingErrorLoadingState).showMessageError()
     }
 
-    override fun launchWithCheckNetworkConnection()
+    override fun actionStateDefaultLoading()
     {
+        this.observableList.clear()
+
         if (this.singleMissionListEntity
                 .responseMissionSharedCrew!!
                 .crew!!
-                .isNotEmpty())
+                .isNotEmpty()
+            && observableList.wrapped.isEmpty()
+        ) {
             NetworkConnection
                 .checkingAccessWithActions(
-                    actionSuccess = ::loadDataForList,
-                    actionFault = ::networkFaultConnection,
+                    actionSuccess =
+                    {
+                        this.observableList.setActionChange {
+                            this.loadingStateMutableModule.set(
+                                LoadingStateModule.LoadingSuccessLoadingStateModule
+                            )
+                        }
+
+                        singleMissionListEntity
+                            .responseMissionSharedCrew
+                            ?.crew
+                            ?.forEach {
+                                this.restRepositoryImpl.launchGetDetailsInfo(it)
+                            }
+                    },
+                    actionFault =
+                    {
+                        this.loadingStateMutableModule.set(
+                            LoadingStateModule.LoadingErrorLoadingStateModule
+                        )
+                    },
                     actionsLoadingAfterAndBefore = Pair(
                         Runnable { this.customLoadingDialog.startLoadingDialog() },
-                        Runnable { this.customLoadingDialog.stopLoadingDialog() }),
-                    listenerForFailConnection = this
+                        Runnable { this.customLoadingDialog.stopLoadingDialog() })
                 )
+        }
         else
         {
-            this.state.set(LoadingState.LoadingSuccessLoadingState)
-            this inflateView observableList
+            this.loadingStateMutableModule.set(
+                LoadingStateModule
+                    .LoadingSuccessLoadingStateModule
+            )
         }
+    }
+
+    override fun actionStateSuccessLoading(viewInflator: ViewInflator?) {
+        viewInflator?.inflateView(this.observableList)
     }
 }

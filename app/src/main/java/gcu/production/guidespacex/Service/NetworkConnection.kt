@@ -24,7 +24,7 @@ internal object NetworkConnection
         crossinline actionSuccess: UnitFunction
         , crossinline actionFault: UnitFunction
         , actionsLoadingAfterAndBefore: PairRunnable
-        , listenerForFailConnection: NetworkActions?)
+        , listenerForFailConnection: NetworkActions? = null)
     {
         GlobalScope.launch(Dispatchers.IO)
         {

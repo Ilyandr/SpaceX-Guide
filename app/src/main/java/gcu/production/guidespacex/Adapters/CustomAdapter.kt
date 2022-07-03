@@ -113,8 +113,6 @@ internal class CustomAdapter(
         this.actionClick = action
     }
 
-
-    // И на миг, позабыв, что такое любовь - мы с тобою начнём.. Танцы вдвоём, странные танцы.
     inner class PaginationController(
         contextCall: Context
         , private val progressBar: ProgressBar

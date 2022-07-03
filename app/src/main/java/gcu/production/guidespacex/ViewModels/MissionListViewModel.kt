@@ -7,28 +7,29 @@ import android.graphics.drawable.ColorDrawable
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import gcu.production.guidespacex.App
-import gcu.production.guidespacex.Data.*
-import gcu.production.guidespacex.Data.LoadingState
+import gcu.production.guidespacex.Model.LoadingStateModule
 import gcu.production.guidespacex.Data.ObservableList
 import gcu.production.guidespacex.Data.PaginationData
 import gcu.production.guidespacex.Service.Rest.RestRepositoryImpl
-import gcu.production.guidespacex.GeneralImpl.NetworkActions
-import gcu.production.guidespacex.R
 import gcu.production.guidespacex.Service.ActivityOnBackPressed
-import gcu.production.guidespacex.Service.NavigationApp
 import gcu.production.guidespacex.Service.NetworkConnection
 import gcu.production.guidespacex.Data.RestEntity.SingleMissionListEntity
-import gcu.production.guidespacex.UI.CustomInterface.CustomLoadingDialog
-import gcu.production.guidespacex.UI.MissionDataFragment
+import gcu.production.guidespacex.CustomInterface.CustomLoadingDialog
+import gcu.production.guidespacex.CustomInterface.ViewInflator
+import gcu.production.guidespacex.GeneralImpl.ViewModelImpl
+import gcu.production.guidespacex.Model.default
+import gcu.production.guidespacex.Model.set
+import gcu.production.guidespacex.R
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
 internal class MissionListViewModel(
     contextCall: FragmentActivity
-) : ViewModel(), NetworkActions, ActivityOnBackPressed
+) : ViewModel(), ActivityOnBackPressed, ViewModelImpl
 {
     @Inject
     lateinit var observableList: ObservableList<SingleMissionListEntity>
@@ -36,22 +37,15 @@ internal class MissionListViewModel(
     @Inject
     lateinit var restRepositoryImpl: RestRepositoryImpl
 
-    val navigationApp: NavigationApp by lazy {
-        NavigationApp(
-            R.id.generalView
-            , MissionDataFragment()
-            , contextCall
-        )
-    }
-
     private val customLoadingDialog: CustomLoadingDialog
          by lazy { CustomLoadingDialog(contextCall) }
 
-    val state =
-        MutableLiveData<LoadingState>()
-            .default(
-                initialState = LoadingState.DefaultLoadingState
-            )
+    private val loadingStateMutableModule =
+        MutableLiveData<LoadingStateModule>()
+            .default(LoadingStateModule.DefaultLoadingStateModule)
+
+    val loadingStateModule: LiveData<LoadingStateModule> =
+        this.loadingStateMutableModule
 
     init
     {
@@ -62,14 +56,13 @@ internal class MissionListViewModel(
 
     private fun loadDataForList()
     {
-        state.set(LoadingState.LoadingProcessState)
+        actionStateSuccessLoading()
 
-        observableList.setActionChange {
+        this.observableList.setActionChange {
             // Хъюстон, кажется у нас больше нет проблем!
-            state.set(LoadingState.LoadingSuccessLoadingState)
+            this.loadingStateMutableModule.set(
+                LoadingStateModule.LoadingSuccessLoadingStateModule)
         }
-
-        restRepositoryImpl launchGetAllMissions  PaginationData()
     }
 
     infix fun checkCompleteList(list: MutableList<*>) =
@@ -78,31 +71,6 @@ internal class MissionListViewModel(
                  singleEntity.missionName != null
             else false
         }
-
-    override fun networkFaultConnection()
-    {
-        state.set(
-            LoadingState.LoadingErrorLoadingState(
-                messageError = Toast.makeText(
-                    this.customLoadingDialog.context
-                    , R.string.toastNetworkError
-                    , Toast.LENGTH_SHORT)
-            )
-        )
-        // Хъюстон, кажется у нас снова проблемы!
-        (state.value as LoadingState.LoadingErrorLoadingState).showMessageError()
-    }
-
-    override fun launchWithCheckNetworkConnection() =
-        NetworkConnection
-            .checkingAccessWithActions(
-                actionSuccess = ::loadDataForList
-                , actionFault = ::networkFaultConnection
-                , actionsLoadingAfterAndBefore = Pair(
-                    Runnable { this.customLoadingDialog.startLoadingDialog() }
-                    , Runnable { this.customLoadingDialog.stopLoadingDialog() })
-                ,  listenerForFailConnection = this
-            )
 
     fun actionBarOptions(titleBar: String, actionBar: ActionBar?) =
         actionBar?.let {
@@ -131,4 +99,37 @@ internal class MissionListViewModel(
                         .remove(it[0])
                         .commit()
             }
+
+    override fun actionStateFaultLoading()
+    {
+        Toast.makeText(
+            this.customLoadingDialog.context
+            , R.string.toastNetworkError
+            , Toast.LENGTH_SHORT
+        ).show()
+
+        this.loadingStateMutableModule.set(
+            LoadingStateModule.DefaultLoadingStateModule
+        )
+    }
+
+    override fun actionStateDefaultLoading()
+    {
+        NetworkConnection
+            .checkingAccessWithActions(
+                actionSuccess = ::loadDataForList
+                , actionFault =
+                {
+                   this.loadingStateMutableModule.set(
+                       LoadingStateModule.LoadingErrorLoadingStateModule)
+                }
+                , actionsLoadingAfterAndBefore = Pair(
+                    Runnable { this.customLoadingDialog.startLoadingDialog() }
+                    , Runnable { this.customLoadingDialog.stopLoadingDialog() })
+            )
+    }
+
+    override fun actionStateSuccessLoading(viewInflator: ViewInflator?) {
+        this.restRepositoryImpl launchGetAllMissions PaginationData()
+    }
 }

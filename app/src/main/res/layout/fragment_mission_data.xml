@@ -6,7 +6,7 @@
     android:background="@color/themeApp"
     android:scrollbars="vertical"
     android:layout_height="match_parent"
-    tools:context=".UI.MissionDataFragment">
+    tools:context=".View.MissionDataFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

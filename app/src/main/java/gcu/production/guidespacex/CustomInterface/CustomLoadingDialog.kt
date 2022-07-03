@@ -1,6 +1,6 @@
 @file:Suppress("PackageName")
 
-package gcu.production.guidespacex.UI.CustomInterface
+package gcu.production.guidespacex.CustomInterface
 
 import android.annotation.SuppressLint
 import android.app.Activity

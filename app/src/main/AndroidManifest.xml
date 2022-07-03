@@ -17,7 +17,7 @@
         android:theme="@style/Theme.GuideSpaceX"
         tools:targetApi="31">
         <activity
-            android:name=".UI.MissionListActivity"
+            android:name=".View.MissionListActivity"
             android:noHistory="true"
             android:exported="true">
             <intent-filter>
